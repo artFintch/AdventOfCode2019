@@ -1,0 +1,20 @@
+PODS:
+  - AdventCode (1.1.1):
+    - Frog
+  - Frog (1.1.2)
+
+DEPENDENCIES:
+  - AdventCode
+
+SPEC REPOS:
+  trunk:
+    - AdventCode
+    - Frog
+
+SPEC CHECKSUMS:
+  AdventCode: 45963afff42e725f8c58f871b40f74899393f08f
+  Frog: 19f85e3159d791e32dea2a0178f349a0524d50a3
+
+PODFILE CHECKSUM: 5fe24452b39abb81ccc4d6aeb27d95b509766acf
+
+COCOAPODS: 1.8.4
