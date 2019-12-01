@@ -15,18 +15,19 @@ struct Day01: Solution {
         return Frog(path).readLines().compactMap(Int.init)
     }
 
-    // TODO: Add read soluton for 2019
     func silver(_ input: [Int]) -> Int {
-        return input.reduce(0, +)
+        return input.reduce(0) { $0 + $1 / 3 - 2 }
     }
 
     func gold(_ input: [Int]) -> Int {
-        var (frequency, step) = (0, 0)
-        var seen: Set<Int> = []
-        while seen.insert(frequency).inserted {
-            frequency += input[step % input.count]
-            step += 1
+        return input.reduce(0) {
+            var number = $1
+            var sum = 0
+            while (number / 3 - 2) > 0 {
+                number = number / 3 - 2
+                sum += number
+            }
+            return $0 + sum
         }
-        return frequency
     }
 }

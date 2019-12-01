@@ -12,8 +12,8 @@ import AdventCode
 class Day01Tests: XCTestCase {
 
     private let solution = TestSolution<Day01>(
-        silverAnswer: 420, // TODO: Add answers
-        goldAnswer: 227
+        silverAnswer: 3262991,
+        goldAnswer: 4891620
     )
 
     func testSilver() {

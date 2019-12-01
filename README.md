@@ -7,4 +7,4 @@
 <!--- Start --->
 | `Days` | `Silver` | `Gold` |
 |:-:|:-:|:-:|
-| `Day 1` |  |  |
+| `Day 1` | ![silver](/Swift/Metrics/day01_silver.svg) | ![gold](/Swift/Metrics/day01_gold.svg) |
