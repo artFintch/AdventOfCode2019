@@ -16,6 +16,9 @@
 		78392890238EA5BA00A94B3B /* day01Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7839288F238EA5BA00A94B3B /* day01Tests.swift */; };
 		784B0CF5238EA84C008EF7C1 /* TestSolution+Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = 784B0CF4238EA84C008EF7C1 /* TestSolution+Init.swift */; };
 		784B0CF7238EA867008EF7C1 /* Bundle+Current.swift in Sources */ = {isa = PBXBuildFile; fileRef = 784B0CF6238EA867008EF7C1 /* Bundle+Current.swift */; };
+		785689B923952A6600EFBBF3 /* Day02Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785689B823952A6600EFBBF3 /* Day02Tests.swift */; };
+		785689BB23952A8000EFBBF3 /* day02.txt in Resources */ = {isa = PBXBuildFile; fileRef = 785689BA23952A8000EFBBF3 /* day02.txt */; };
+		785689BD23952ABE00EFBBF3 /* day02.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785689BC23952ABE00EFBBF3 /* day02.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -47,6 +50,9 @@
 		7839288F238EA5BA00A94B3B /* day01Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = day01Tests.swift; sourceTree = "<group>"; };
 		784B0CF4238EA84C008EF7C1 /* TestSolution+Init.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TestSolution+Init.swift"; sourceTree = "<group>"; };
 		784B0CF6238EA867008EF7C1 /* Bundle+Current.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Current.swift"; sourceTree = "<group>"; };
+		785689B823952A6600EFBBF3 /* Day02Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day02Tests.swift; sourceTree = "<group>"; };
+		785689BA23952A8000EFBBF3 /* day02.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = day02.txt; sourceTree = "<group>"; };
+		785689BC23952ABE00EFBBF3 /* day02.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = day02.swift; sourceTree = "<group>"; };
 		B2FE1DA34010988A3FED0E26 /* libPods-Sandbox.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Sandbox.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -111,6 +117,7 @@
 		7839287D238EA32100A94B3B /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				785689B723952A4A00EFBBF3 /* day02 */,
 				784B0CF3238EA791008EF7C1 /* utils */,
 				7839288A238EA58000A94B3B /* day01 */,
 				78392880238EA32100A94B3B /* Info.plist */,
@@ -122,6 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				78392888238EA45F00A94B3B /* day01.swift */,
+				785689BC23952ABE00EFBBF3 /* day02.swift */,
 			);
 			path = Advent;
 			sourceTree = "<group>";
@@ -142,6 +150,15 @@
 				784B0CF6238EA867008EF7C1 /* Bundle+Current.swift */,
 			);
 			path = utils;
+			sourceTree = "<group>";
+		};
+		785689B723952A4A00EFBBF3 /* day02 */ = {
+			isa = PBXGroup;
+			children = (
+				785689BA23952A8000EFBBF3 /* day02.txt */,
+				785689B823952A6600EFBBF3 /* Day02Tests.swift */,
+			);
+			path = day02;
 			sourceTree = "<group>";
 		};
 		D862B6D8F98B696C83635538 /* Frameworks */ = {
@@ -246,6 +263,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7839288D238EA58100A94B3B /* day01.txt in Resources */,
+				785689BB23952A8000EFBBF3 /* day02.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -313,8 +331,10 @@
 			files = (
 				784B0CF5238EA84C008EF7C1 /* TestSolution+Init.swift in Sources */,
 				78392889238EA45F00A94B3B /* day01.swift in Sources */,
+				785689BD23952ABE00EFBBF3 /* day02.swift in Sources */,
 				78392890238EA5BA00A94B3B /* day01Tests.swift in Sources */,
 				784B0CF7238EA867008EF7C1 /* Bundle+Current.swift in Sources */,
+				785689B923952A6600EFBBF3 /* Day02Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

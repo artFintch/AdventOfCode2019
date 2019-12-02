@@ -8,3 +8,4 @@
 | `Days` | `Silver` | `Gold` |
 |:-:|:-:|:-:|
 | `Day 1` | ![silver](/Swift/Metrics/day01_silver.svg) | ![gold](/Swift/Metrics/day01_gold.svg) |
+| `Day 2` | ![silver](/Swift/Metrics/day02_silver.svg) | ![gold](/Swift/Metrics/day02_gold.svg) |
