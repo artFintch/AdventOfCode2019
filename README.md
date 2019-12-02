@@ -7,5 +7,5 @@
 <!--- Start --->
 | `Days` | `Silver` | `Gold` |
 |:-:|:-:|:-:|
-| `Day 1` | ![silver](/Swift/Metrics/day01_silver.svg) | ![gold](/Swift/Metrics/day01_gold.svg) |
-| `Day 2` | ![silver](/Swift/Metrics/day02_silver.svg) | ![gold](/Swift/Metrics/day02_gold.svg) |
+| `Day 1` | [![silver](/Swift/Metrics/day01_silver.svg)](/Swift/Swift/Advent/day01.swift) | [![gold](/Swift/Metrics/day01_gold.svg)](/Swift/Swift/Advent/day01.swift) |
+| `Day 2` | [![silver](/Swift/Metrics/day02_silver.svg)](/Swift/Swift/Advent/day02.swift) | [![gold](/Swift/Metrics/day02_gold.svg)](/Swift/Swift/Advent/day02.swift) |
