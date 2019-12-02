@@ -9,14 +9,31 @@
 import Frog
 
 let frog = Frog("input.txt")
-let numbers = frog.readLines().compactMap(Int.init)
-let sum = numbers.reduce(0) {
-    var n = $1
-    var s = 0
-    while (n / 3 - 2) > 0 {
-        n = n / 3 - 2
-        s += n
+var numbers = frog
+    .readLine()!
+    .components(separatedBy: ",")
+    .compactMap(Int.init)
+
+func tryInput(_ numbers: [Int], _ a: Int, _ b: Int) -> Int {
+    var numbers = numbers
+    numbers[1] = a
+    numbers[2] = b
+    for start in stride(from: 0, to: numbers.count, by: 4) {
+        if numbers[start] == 99 { break }
+        let op: (Int, Int) -> Int = (numbers[start] == 1) ? (+) : (*)
+        let (arg0, arg1) = (numbers[start + 1], numbers[start + 2])
+        let output = numbers[start + 3]
+        numbers[output] = op(numbers[arg0], numbers[arg1])
     }
-    return $0 + s
+    return numbers[0]
 }
-print(sum)
+
+print(tryInput(numbers, 12, 2))
+for a in 0..<100 {
+    for b in 0..<100 {
+        if tryInput(numbers, a, b) == 19690720 {
+            print(a * 100 + b)
+            break
+        }
+    }
+}
