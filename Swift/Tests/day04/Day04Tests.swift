@@ -1,19 +1,19 @@
 //
-//  Day03Tests.swift
+//  Day04Tests.swift
 //  Tests
 //
-//  Created by v.khorkov on 04.12.2019.
+//  Created by v.khorkov on 05.12.2019.
 //  Copyright © 2019 v.khorkov. All rights reserved.
 //
 
 import XCTest
 import AdventCode
 
-final class Day03Tests: XCTestCase {
+final class Day04Tests: XCTestCase {
 
-    private let solution = TestSolution<Day03>(
-        silverAnswer: 386,
-        goldAnswer: 6484
+    private let solution = TestSolution<Day04>(
+        silverAnswer: 1640,
+        goldAnswer: 1126
     )
 
     func testSilver() {

@@ -9,8 +9,11 @@
 /* Begin PBXBuildFile section */
 		4142C12C2396F23000910F9E /* Day03Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4142C12A2396F23000910F9E /* Day03Tests.swift */; };
 		4142C12E2396F2DA00910F9E /* day03.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4142C12B2396F23000910F9E /* day03.txt */; };
+		4142C13723983E1B00910F9E /* day04.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4142C13623983E1B00910F9E /* day04.swift */; };
 		418543DE23937FF500FBE72C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 418543DD23937FF500FBE72C /* main.swift */; };
 		418543E32393801700FBE72C /* input.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 418543E22393800B00FBE72C /* input.txt */; };
+		41B7444223983EBC00077ADE /* Day04Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41B7444123983EBC00077ADE /* Day04Tests.swift */; };
+		41B7444423983F0B00077ADE /* day04.txt in Resources */ = {isa = PBXBuildFile; fileRef = 41B7444323983F0B00077ADE /* day04.txt */; };
 		41B8DAE42396F0D200B5596D /* day03.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41B8DAE32396F0D200B5596D /* day03.swift */; };
 		41E3B6751192BED4365FF600 /* libPods-Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D21620E5B4102D12720E614 /* libPods-Tests.a */; };
 		693AD0AD1CF259614809AE08 /* libPods-Sandbox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B2FE1DA34010988A3FED0E26 /* libPods-Sandbox.a */; };
@@ -44,9 +47,12 @@
 		366CCB692ECEA4EAF235E209 /* Pods-Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests.debug.xcconfig"; path = "Target Support Files/Pods-Tests/Pods-Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		4142C12A2396F23000910F9E /* Day03Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Day03Tests.swift; sourceTree = "<group>"; };
 		4142C12B2396F23000910F9E /* day03.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = day03.txt; sourceTree = "<group>"; };
+		4142C13623983E1B00910F9E /* day04.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = day04.swift; sourceTree = "<group>"; };
 		418543DB23937FF500FBE72C /* Sandbox */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Sandbox; sourceTree = BUILT_PRODUCTS_DIR; };
 		418543DD23937FF500FBE72C /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		418543E22393800B00FBE72C /* input.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = input.txt; sourceTree = "<group>"; };
+		41B7444123983EBC00077ADE /* Day04Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Day04Tests.swift; sourceTree = "<group>"; };
+		41B7444323983F0B00077ADE /* day04.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = day04.txt; sourceTree = "<group>"; };
 		41B8DAE32396F0D200B5596D /* day03.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = day03.swift; sourceTree = "<group>"; };
 		5B70CA53D24942ECFD6B2853 /* Pods-Sandbox.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sandbox.release.xcconfig"; path = "Target Support Files/Pods-Sandbox/Pods-Sandbox.release.xcconfig"; sourceTree = "<group>"; };
 		7839287C238EA32000A94B3B /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -100,6 +106,15 @@
 			path = Sandbox;
 			sourceTree = "<group>";
 		};
+		41B7444023983EBC00077ADE /* day04 */ = {
+			isa = PBXGroup;
+			children = (
+				41B7444123983EBC00077ADE /* Day04Tests.swift */,
+				41B7444323983F0B00077ADE /* day04.txt */,
+			);
+			path = day04;
+			sourceTree = "<group>";
+		};
 		78392865238EA2FA00A94B3B = {
 			isa = PBXGroup;
 			children = (
@@ -132,10 +147,11 @@
 		7839287D238EA32100A94B3B /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				41B7444023983EBC00077ADE /* day04 */,
 				4142C1252396F21600910F9E /* day03 */,
 				785689B723952A4A00EFBBF3 /* day02 */,
-				784B0CF3238EA791008EF7C1 /* utils */,
 				7839288A238EA58000A94B3B /* day01 */,
+				784B0CF3238EA791008EF7C1 /* utils */,
 				78392880238EA32100A94B3B /* Info.plist */,
 			);
 			path = Tests;
@@ -147,6 +163,7 @@
 				78392888238EA45F00A94B3B /* day01.swift */,
 				785689BC23952ABE00EFBBF3 /* day02.swift */,
 				41B8DAE32396F0D200B5596D /* day03.swift */,
+				4142C13623983E1B00910F9E /* day04.swift */,
 			);
 			path = Advent;
 			sourceTree = "<group>";
@@ -280,6 +297,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7839288D238EA58100A94B3B /* day01.txt in Resources */,
+				41B7444423983F0B00077ADE /* day04.txt in Resources */,
 				785689BB23952A8000EFBBF3 /* day02.txt in Resources */,
 				4142C12E2396F2DA00910F9E /* day03.txt in Resources */,
 			);
@@ -347,6 +365,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41B7444223983EBC00077ADE /* Day04Tests.swift in Sources */,
 				4142C12C2396F23000910F9E /* Day03Tests.swift in Sources */,
 				784B0CF5238EA84C008EF7C1 /* TestSolution+Init.swift in Sources */,
 				78392889238EA45F00A94B3B /* day01.swift in Sources */,
@@ -354,6 +373,7 @@
 				785689BD23952ABE00EFBBF3 /* day02.swift in Sources */,
 				78392890238EA5BA00A94B3B /* day01Tests.swift in Sources */,
 				784B0CF7238EA867008EF7C1 /* Bundle+Current.swift in Sources */,
+				4142C13723983E1B00910F9E /* day04.swift in Sources */,
 				785689B923952A6600EFBBF3 /* Day02Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
