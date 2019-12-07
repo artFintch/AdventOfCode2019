@@ -8,134 +8,51 @@
 
 import Frog
 
-let lines = Frog("input.txt").readLines().map {
-    $0.components(separatedBy: ",").compactMap(Int.init)
-}
+let lines = Frog("input.txt").readLines()
 
-func getDigits(num: Int) -> [Int] {
-    var digits: [Int] = []
-    var num = num
-    while num > 0 {
-        let lastDigit = num % 10
-        num /= 10
-        digits.append(lastDigit)
+//var points: [String: String] = [:]
+var points2: [String: Set<String>] = [:]
+for line in lines {
+    let labels = line.components(separatedBy: ")")
+//    points[labels[1]] = labels[0]
+
+    if labels[0] != "YOU" {
+        points2[labels[1], default: []].insert(labels[0])
     }
-    return digits
+    if labels[1] != "YOU" {
+        points2[labels[0], default: []].insert(labels[1])
+    }
 }
 
-var input = 1
-func runProgram(_ nums: [Int], _ a: Int) -> Int {
-    var nums = nums
-//    nums[1] = a
-    var index = 0
-    while index < nums.count {
-        var digits = getDigits(num: nums[index])
+//var count = 0
+//for point in points {
+//    var current: String? = point.key
+//    while current != nil && points[current!] != nil {
+//        count += 1
+//        current = points[current!]
+//    }
+//}
+//print(count)
 
-        let op: Int
-        if digits.count == 1 {
-            op = digits.removeFirst()
-        } else {
-            op = digits[1] * 10 + digits.removeFirst()
-            digits.removeFirst()
+var count = 0
+var used: Set<String> = points2["YOU"]!
+var queue: [String] = Array(points2["YOU"]!)
+var path: [String: Int] = [:]
+for p in queue {
+    path[p] = 0
+}
+finish: while !queue.isEmpty {
+    let first = queue.removeFirst()
+    for p in points2[first]! {
+        if !used.contains(p) {
+            queue.append(p)
+            path[p, default: 0] = (path[first] ?? 0) + 1
         }
-
-        let mode0 = digits.isEmpty ? 0 : digits.removeFirst()
-        let mode1 = digits.isEmpty ? 0 : digits.removeFirst()
-        let mode2 = digits.isEmpty ? 0 : digits.removeFirst()
-
-        switch op {
-        case 1:
-            // +
-            let arg1 = mode0 == 0 ? nums[nums[index + 1]] : nums[index + 1]
-            let arg2 = mode1 == 0 ? nums[nums[index + 2]] : nums[index + 2]
-            nums[nums[index + 3]] = arg1 + arg2
-            index += 4
-        case 2:
-            // *
-            let arg1 = mode0 == 0 ? nums[nums[index + 1]] : nums[index + 1]
-            let arg2 = mode1 == 0 ? nums[nums[index + 2]] : nums[index + 2]
-            nums[nums[index + 3]] = arg1 * arg2
-            index += 4
-        case 3:
-            // in
-            if mode0 == 0 {
-                nums[nums[index + 1]] = input
-            } else {
-                nums[index + 1] = input
-            }
-            index += 2
-        case 4:
-            // out
-            let arg1 = mode0 == 0 ? nums[nums[index + 1]] : nums[index + 1]
-            input = arg1
-            index += 2
-
-        case 5:
-            // jump-if-true
-            let arg1 = mode0 == 0 ? nums[nums[index + 1]] : nums[index + 1]
-            let arg2 = mode1 == 0 ? nums[nums[index + 2]] : nums[index + 2]
-            if arg1 != 0 {
-                index = arg2
-            } else {
-                index += 3
-            }
-
-        case 6:
-            // jump-if-false
-            let arg1 = mode0 == 0 ? nums[nums[index + 1]] : nums[index + 1]
-            let arg2 = mode1 == 0 ? nums[nums[index + 2]] : nums[index + 2]
-            if arg1 == 0 {
-                index = arg2
-            } else {
-                index += 3
-            }
-
-        case 7:
-            // less
-            let arg1 = mode0 == 0 ? nums[nums[index + 1]] : nums[index + 1]
-            let arg2 = mode1 == 0 ? nums[nums[index + 2]] : nums[index + 2]
-            if mode2 == 0 {
-                nums[nums[index + 3]] = arg1 < arg2 ? 1 : 0
-            } else {
-                nums[index + 3] = arg1 < arg2 ? 1 : 0
-            }
-            index += 4
-
-        case 8:
-            // equals
-            let arg1 = mode0 == 0 ? nums[nums[index + 1]] : nums[index + 1]
-            let arg2 = mode1 == 0 ? nums[nums[index + 2]] : nums[index + 2]
-            if mode2 == 0 {
-                nums[nums[index + 3]] = arg1 == arg2 ? 1 : 0
-            } else {
-                nums[index + 3] = arg1 == arg2 ? 1 : 0
-            }
-            index += 4
-
-        case 99:
-            return input
-        default:
-            fatalError()
+        used.insert(p)
+        if p == "SAN" {
+            break finish
         }
     }
-
-    return 0
 }
+print(path["SAN"]! - 1)
 
-// silver
-var answer = -1
-input = 1
-for line in lines {
-    answer = runProgram(line, 1)
-    if answer != 0 { break }
-}
-assert(answer == 12440243)
-
-// gold
-answer = -1
-input = 5
-for line in lines {
-    answer = runProgram(line, 1)
-    if answer != 0 { break }
-}
-assert(answer == 15486302)
