@@ -47,7 +47,7 @@ print(map[imin])
 let a = map[imin].flatMap { $0 }.reduce(0) { $0 + (($1 == 1) ? 1 : 0) }
 let b = map[imin].flatMap { $0 }.reduce(0) { $0 + (($1 == 2) ? 1 : 0) }
 print(a * b)
-
+// 1224
 
 // gold
 
@@ -74,3 +74,4 @@ for column in 0..<columnSize {
 for row in image {
     print(row.map { $0 == 1 ? "#" : "." })
 }
+// EBZUR

@@ -25,6 +25,9 @@
 		785689B923952A6600EFBBF3 /* Day02Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785689B823952A6600EFBBF3 /* Day02Tests.swift */; };
 		785689BB23952A8000EFBBF3 /* day02.txt in Resources */ = {isa = PBXBuildFile; fileRef = 785689BA23952A8000EFBBF3 /* day02.txt */; };
 		785689BD23952ABE00EFBBF3 /* day02.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785689BC23952ABE00EFBBF3 /* day02.swift */; };
+		7868BA3C239D77B700C98687 /* day08.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7868BA3B239D77B700C98687 /* day08.swift */; };
+		7868BA40239D7AF200C98687 /* Day08Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7868BA3E239D7AF200C98687 /* Day08Tests.swift */; };
+		7868BA41239D7AF200C98687 /* day08.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7868BA3F239D7AF200C98687 /* day08.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -65,6 +68,9 @@
 		785689B823952A6600EFBBF3 /* Day02Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day02Tests.swift; sourceTree = "<group>"; };
 		785689BA23952A8000EFBBF3 /* day02.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = day02.txt; sourceTree = "<group>"; };
 		785689BC23952ABE00EFBBF3 /* day02.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = day02.swift; sourceTree = "<group>"; };
+		7868BA3B239D77B700C98687 /* day08.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = day08.swift; sourceTree = "<group>"; };
+		7868BA3E239D7AF200C98687 /* Day08Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Day08Tests.swift; sourceTree = "<group>"; };
+		7868BA3F239D7AF200C98687 /* day08.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = day08.txt; sourceTree = "<group>"; };
 		B2FE1DA34010988A3FED0E26 /* libPods-Sandbox.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Sandbox.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -147,6 +153,7 @@
 		7839287D238EA32100A94B3B /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				7868BA3D239D7AF200C98687 /* day08 */,
 				41B7444023983EBC00077ADE /* day04 */,
 				4142C1252396F21600910F9E /* day03 */,
 				785689B723952A4A00EFBBF3 /* day02 */,
@@ -160,6 +167,7 @@
 		78392884238EA34F00A94B3B /* Advent */ = {
 			isa = PBXGroup;
 			children = (
+				7868BA3B239D77B700C98687 /* day08.swift */,
 				78392888238EA45F00A94B3B /* day01.swift */,
 				785689BC23952ABE00EFBBF3 /* day02.swift */,
 				41B8DAE32396F0D200B5596D /* day03.swift */,
@@ -193,6 +201,15 @@
 				785689B823952A6600EFBBF3 /* Day02Tests.swift */,
 			);
 			path = day02;
+			sourceTree = "<group>";
+		};
+		7868BA3D239D7AF200C98687 /* day08 */ = {
+			isa = PBXGroup;
+			children = (
+				7868BA3E239D7AF200C98687 /* Day08Tests.swift */,
+				7868BA3F239D7AF200C98687 /* day08.txt */,
+			);
+			path = day08;
 			sourceTree = "<group>";
 		};
 		D862B6D8F98B696C83635538 /* Frameworks */ = {
@@ -298,6 +315,7 @@
 			files = (
 				7839288D238EA58100A94B3B /* day01.txt in Resources */,
 				41B7444423983F0B00077ADE /* day04.txt in Resources */,
+				7868BA41239D7AF200C98687 /* day08.txt in Resources */,
 				785689BB23952A8000EFBBF3 /* day02.txt in Resources */,
 				4142C12E2396F2DA00910F9E /* day03.txt in Resources */,
 			);
@@ -369,9 +387,11 @@
 				4142C12C2396F23000910F9E /* Day03Tests.swift in Sources */,
 				784B0CF5238EA84C008EF7C1 /* TestSolution+Init.swift in Sources */,
 				78392889238EA45F00A94B3B /* day01.swift in Sources */,
+				7868BA3C239D77B700C98687 /* day08.swift in Sources */,
 				41B8DAE42396F0D200B5596D /* day03.swift in Sources */,
 				785689BD23952ABE00EFBBF3 /* day02.swift in Sources */,
 				78392890238EA5BA00A94B3B /* day01Tests.swift in Sources */,
+				7868BA40239D7AF200C98687 /* Day08Tests.swift in Sources */,
 				784B0CF7238EA867008EF7C1 /* Bundle+Current.swift in Sources */,
 				4142C13723983E1B00910F9E /* day04.swift in Sources */,
 				785689B923952A6600EFBBF3 /* Day02Tests.swift in Sources */,
