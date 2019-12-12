@@ -68,17 +68,41 @@ var moons = origin
 //}
 //print(energy)
 
+//var steps = 0
+//while true {
+//    moons = makeStep(moons)
+//    steps += 1
+//
+//    if moons.allSatisfy({ $0.velocity.x == 0 && $0.velocity.y == 0 && $0.velocity.z == 0 }) {
+//        var same = true
+//        for i in moons.indices{
+//            if moons[i].position.x != origin[i].position.x ||
+//                moons[i].position.y != origin[i].position.y ||
+//                moons[i].position.z != origin[i].position.z {
+//                same = false
+//                break
+//            }
+//        }
+//        if same {
+//            print(steps)
+//            moons.forEach { print($0) }
+//            break
+//        }
+//    }
+//    if steps % 1000 == 0 {
+//        print(steps)
+//    }
+//}
+
 var steps = 0
 while true {
     moons = makeStep(moons)
     steps += 1
 
-    if moons.allSatisfy({ $0.velocity.x == 0 && $0.velocity.y == 0 && $0.velocity.z == 0 }) {
+    if moons.allSatisfy({ $0.velocity.x == 0 }) {
         var same = true
         for i in moons.indices{
-            if moons[i].position.x != origin[i].position.x ||
-                moons[i].position.y != origin[i].position.y ||
-                moons[i].position.z != origin[i].position.z {
+            if moons[i].position.x != origin[i].position.x {
                 same = false
                 break
             }
@@ -89,7 +113,18 @@ while true {
             break
         }
     }
-    if steps % 1000 == 0 {
-        print(steps)
-    }
 }
+
+// x 113028
+// y 167624
+// z 231614
+
+func gcd(_ a: Int, _ b: Int) -> Int {
+    if b == 0 { return a }
+    else { return gcd(b, a % b) }
+}
+func lcm(_ a: Int, _ b: Int) -> Int {
+    return a / gcd(a, b) * b
+}
+
+print(lcm(lcm(113028, 167624), 231614))
