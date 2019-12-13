@@ -8,123 +8,165 @@
 
 import Frog
 
-struct Vector { var x, y, z: Int }
-func readInput(from path: String) -> [Vector] {
-    return Frog(path).readLines().map {
-        let coordinates = $0.components(separatedBy: ["<", "=", ",", " ", ">"])
-            .compactMap(Int.init)
-        return Vector(x: coordinates[0], y: coordinates[1], z: coordinates[2])
-    }
+func readInput(from path: String) -> [Int] {
+    return Frog(path).readLine()!
+        .components(separatedBy: ",")
+        .compactMap(Int.init)
 }
 
-struct Moon { var position: Vector; var velocity: Vector }
-func makeStep(_ moons: [Moon]) -> [Moon] {
-    var moons = moons
-    for i in moons.indices {
-        for j in moons.indices where i != j {
-            if moons[i].position.x > moons[j].position.x {
-                moons[i].velocity.x -= 1
-            } else if moons[i].position.x < moons[j].position.x {
-                moons[i].velocity.x += 1
-            }
+func getDigits(num: Int) -> [Int] {
+    var digits: [Int] = []
+    var num = num
+    while num > 0 {
+        let lastDigit = num % 10
+        num /= 10
+        digits.append(lastDigit)
+    }
+    return digits
+}
 
-            if moons[i].position.y > moons[j].position.y {
-                moons[i].velocity.y -= 1
-            } else if moons[i].position.y < moons[j].position.y {
-                moons[i].velocity.y += 1
-            }
+func runProgram(_ nums: [Int], input: () -> Int, output: (Int) -> Void) {
+    var dict: [Int: Int] = [:]
+    for pair in nums.enumerated() {
+        dict[pair.offset] = pair.element
+    }
 
-            if moons[i].position.z > moons[j].position.z {
-                moons[i].velocity.z -= 1
-            } else if moons[i].position.z < moons[j].position.z {
-                moons[i].velocity.z += 1
-            }
+    var index = 0
+    var rel = 0
+
+    func indexForMode(_ mode: Int, i: Int, r: Int) -> Int {
+        switch mode {
+        case 0:
+            return dict[i, default: 0]
+        case 1:
+            return i
+        case 2:
+            return r + dict[i, default: 0]
+        default:
+            fatalError()
         }
     }
-//    moons.forEach { print($0) }
 
-    for i in moons.indices {
-        moons[i].position.x += moons[i].velocity.x
-        moons[i].position.y += moons[i].velocity.y
-        moons[i].position.z += moons[i].velocity.z
+    while true {
+        var digits = getDigits(num: dict[index]!)
+
+        let op: Int
+        if digits.count == 1 {
+            op = digits.removeFirst()
+        } else {
+            op = digits[1] * 10 + digits.removeFirst()
+            digits.removeFirst()
+        }
+
+        let mode0 = digits.isEmpty ? 0 : digits.removeFirst()
+        let mode1 = digits.isEmpty ? 0 : digits.removeFirst()
+        let mode2 = digits.isEmpty ? 0 : digits.removeFirst()
+
+        switch op {
+        case 1:
+            // +
+            let arg1 = dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
+            let arg2 = dict[indexForMode(mode1, i: index + 2, r: rel), default: 0]
+            dict[indexForMode(mode2, i: index + 3, r: rel)] = arg1 + arg2
+            index += 4
+
+        case 2:
+            // *
+            let arg1 = dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
+            let arg2 = dict[indexForMode(mode1, i: index + 2, r: rel), default: 0]
+            dict[indexForMode(mode2, i: index + 3, r: rel)] = arg1 * arg2
+            index += 4
+
+        case 3:
+            // in
+            dict[indexForMode(mode0, i: index + 1, r: rel)] = input()
+            index += 2
+
+        case 4:
+            // out
+            output(dict[indexForMode(mode0, i: index + 1, r: rel), default: 0])
+            index += 2
+
+        case 5:
+            // jump-if-true
+            let arg1 = dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
+            let arg2 = dict[indexForMode(mode1, i: index + 2, r: rel), default: 0]
+            index = (arg1 != 0) ? arg2 : index + 3
+
+        case 6:
+            // jump-if-false
+            let arg1 = dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
+            let arg2 = dict[indexForMode(mode1, i: index + 2, r: rel), default: 0]
+            index = (arg1 == 0) ? arg2 : index + 3
+
+        case 7:
+            // less
+            let arg1 = dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
+            let arg2 = dict[indexForMode(mode1, i: index + 2, r: rel), default: 0]
+            dict[indexForMode(mode2, i: index + 3, r: rel)] = (arg1 < arg2 ? 1 : 0)
+            index += 4
+
+        case 8:
+            // equals
+            let arg1 = dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
+            let arg2 = dict[indexForMode(mode1, i: index + 2, r: rel), default: 0]
+            dict[indexForMode(mode2, i: index + 3, r: rel)] = (arg1 == arg2 ? 1 : 0)
+            index += 4
+
+        case 9:
+            // relative
+            rel += dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
+            index += 2
+
+        case 99:
+            return
+
+        default:
+            fatalError()
+        }
     }
-
-    return moons
 }
 
-let input = readInput(from: "input.txt")
-let origin = input.map { Moon(position: $0, velocity: Vector(x: 0, y: 0, z: 0)) }
-var moons = origin
-//var steps = 1000
-//while steps > 0 {
-//    moons = makeStep(moons)
-//    steps -= 1
-//}
 //
-//let energy = moons.reduce(0) {
-//    let pot = Swift.abs($1.position.x) + Swift.abs($1.position.y) + Swift.abs($1.position.z)
-//    let kin = Swift.abs($1.velocity.x) + Swift.abs($1.velocity.y) + Swift.abs($1.velocity.z)
-//    return $0 + pot * kin
-//}
-//print(energy)
+var input = readInput(from: "input.txt")
 
-//var steps = 0
-//while true {
-//    moons = makeStep(moons)
-//    steps += 1
-//
-//    if moons.allSatisfy({ $0.velocity.x == 0 && $0.velocity.y == 0 && $0.velocity.z == 0 }) {
-//        var same = true
-//        for i in moons.indices{
-//            if moons[i].position.x != origin[i].position.x ||
-//                moons[i].position.y != origin[i].position.y ||
-//                moons[i].position.z != origin[i].position.z {
-//                same = false
-//                break
-//            }
-//        }
-//        if same {
-//            print(steps)
-//            moons.forEach { print($0) }
-//            break
-//        }
-//    }
-//    if steps % 1000 == 0 {
-//        print(steps)
-//    }
-//}
+struct Point: Hashable { let x, y: Int }
+var map: [Point: Int] = [:]
 
-var steps = 0
-while true {
-    moons = makeStep(moons)
-    steps += 1
-
-    if moons.allSatisfy({ $0.velocity.x == 0 }) {
-        var same = true
-        for i in moons.indices{
-            if moons[i].position.x != origin[i].position.x {
-                same = false
-                break
-            }
-        }
-        if same {
-            print(steps)
-            moons.forEach { print($0) }
-            break
-        }
+var xy: [Int] = []
+runProgram(input, input: { () -> Int in
+    fatalError()
+}, output: {
+    if xy.count == 2 {
+        map[Point(x: xy[0], y: xy[1])] = $0
+        xy.removeAll()
+    } else {
+        xy.append($0)
     }
-}
+})
+let blocks = map.values.reduce(0) { $0 + ($1 == 2 ? 1 : 0) }
+print(blocks, 258, blocks == 258)
 
-// x 113028
-// y 167624
-// z 231614
-
-func gcd(_ a: Int, _ b: Int) -> Int {
-    if b == 0 { return a }
-    else { return gcd(b, a % b) }
-}
-func lcm(_ a: Int, _ b: Int) -> Int {
-    return a / gcd(a, b) * b
-}
-
-print(lcm(lcm(113028, 167624), 231614))
+// Gold
+input[0] = 2
+map = [:]
+xy.removeAll()
+var output = 0
+runProgram(input, input: { () -> Int in
+    let ball = map.first(where: { $1 == 4 })!.key
+    let paddle = map.first(where: { $1 == 3 })!.key
+    return ball.x - paddle.x
+}, output: {
+    if xy.count == 2 {
+        if xy[0] == -1 && xy[1] == 0 {
+            output = $0
+        } else {
+            map[Point(x: xy[0], y: xy[1])] = $0
+        }
+        xy.removeAll()
+    } else {
+        xy.append($0)
+    }
+})
+print(map.values.reduce(0) { $0 + ($1 == 2 ? 1 : 0) })
+print(output, 12765, output == 12765)
