@@ -8,230 +8,124 @@
 
 import Frog
 
-func readInput(from path: String) -> [Int] {
-    return Frog(path).readLine()!
-        .components(separatedBy: ",")
-        .compactMap(Int.init)
+struct E: Equatable {
+    let name: String
+    let count: Int
+}
+struct R {
+    let from: E
+    let to: E
 }
 
-func getDigits(num: Int) -> [Int] {
-    var digits: [Int] = []
-    var num = num
-    while num > 0 {
-        let lastDigit = num % 10
-        num /= 10
-        digits.append(lastDigit)
-    }
-    return digits
-}
-
-struct Program {
-
-    enum State {
-        case stop, input, output
-    }
-    private var state: State = .stop
-
-    private var dict: [Int: Int] = [:]
-    private var index = 0
-    private var rel = 0
-
-    private var output = 0
-    private var inputMode = 0
-
-    init(nums: [Int]) {
-        for pair in nums.enumerated() {
-            dict[pair.offset] = pair.element
+func readInput(from path: String) -> [String: [R]] {
+    var table: [String: [R]] = [:]
+    Frog(path).readLines().forEach {
+        let sides: [String] = $0.components(separatedBy: " => ")
+        let leftSide: [E] = sides[0].components(separatedBy: ", ").map { (part: String) in
+            let parts = part.components(separatedBy: " ")
+            return E(name: parts[1], count: Int(parts[0])!)
+        }
+        let rightParts = sides[1].components(separatedBy: " ")
+        let rightSide = E(name: rightParts[1], count: Int(rightParts[0])!)
+        table[rightSide.name] = leftSide.map {
+            R(from: rightSide, to: $0)
         }
     }
+    return table
+}
 
-    mutating func run() {
-        while true {
-            var digits = getDigits(num: dict[index]!)
-
-            let op: Int
-            if digits.count == 1 {
-                op = digits.removeFirst()
-            } else {
-                op = digits[1] * 10 + digits.removeFirst()
-                digits.removeFirst()
-            }
-
-            let mode0 = digits.isEmpty ? 0 : digits.removeFirst()
-            let mode1 = digits.isEmpty ? 0 : digits.removeFirst()
-            let mode2 = digits.isEmpty ? 0 : digits.removeFirst()
-
-            switch op {
-            case 1:
-                // +
-                let arg1 = dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
-                let arg2 = dict[indexForMode(mode1, i: index + 2, r: rel), default: 0]
-                dict[indexForMode(mode2, i: index + 3, r: rel)] = arg1 + arg2
-                index += 4
-
-            case 2:
-                // *
-                let arg1 = dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
-                let arg2 = dict[indexForMode(mode1, i: index + 2, r: rel), default: 0]
-                dict[indexForMode(mode2, i: index + 3, r: rel)] = arg1 * arg2
-                index += 4
-
-            case 3:
-                // in
-                inputMode = mode0
-                state = .input
-                // wait input
-                return
-
-            case 4:
-                // out
-                output = dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
-                index += 2
-                state = .output
-                // wait continue
-                return
-
-            case 5:
-                // jump-if-true
-                let arg1 = dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
-                let arg2 = dict[indexForMode(mode1, i: index + 2, r: rel), default: 0]
-                index = (arg1 != 0) ? arg2 : index + 3
-
-            case 6:
-                // jump-if-false
-                let arg1 = dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
-                let arg2 = dict[indexForMode(mode1, i: index + 2, r: rel), default: 0]
-                index = (arg1 == 0) ? arg2 : index + 3
-
-            case 7:
-                // less
-                let arg1 = dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
-                let arg2 = dict[indexForMode(mode1, i: index + 2, r: rel), default: 0]
-                dict[indexForMode(mode2, i: index + 3, r: rel)] = (arg1 < arg2 ? 1 : 0)
-                index += 4
-
-            case 8:
-                // equals
-                let arg1 = dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
-                let arg2 = dict[indexForMode(mode1, i: index + 2, r: rel), default: 0]
-                dict[indexForMode(mode2, i: index + 3, r: rel)] = (arg1 == arg2 ? 1 : 0)
-                index += 4
-
-            case 9:
-                // relative
-                rel += dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
-                index += 2
-
-            case 99:
-                return
-
-            default:
-                fatalError()
-            }
-        }
+func tryReact(element: E, table: [String: [R]]) -> [E] {
+//    if element.name == "ORE" { return [] }
+    if element.count < 0 { return [element] }
+    let reactions = table[element.name, default: []]
+    let a = element.count / reactions[0].from.count
+    let b = (element.count % reactions[0].from.count == 0) ? a : a + 1
+    var newElements: [E] = reactions.compactMap {
+        if $0.to.name == "ORE" { return nil }
+//        print(element, $0.from, $0.to)
+//        print($0.from.name, "\(element.count) (\(b * $0.from.count))", " / ", $0.from.count, " * ", $0.to.count, " = ", b * $0.to.count, $0.to.name)
+//        print("")
+        return E(name: $0.to.name, count: b * $0.to.count)
     }
-
-    mutating func input(_ input: Int) {
-        guard state == .input else { fatalError() }
-        dict[indexForMode(inputMode, i: index + 1, r: rel)] = input
-        index += 2
+    if !newElements.isEmpty, element.count != b * reactions[0].from.count {
+        newElements.append(E(name: element.name, count: element.count - b * reactions[0].from.count))
     }
+    return newElements
+}
 
-    func readOutput() -> Int {
-        guard state == .output else { fatalError() }
-        return output
-    }
-
-    private func indexForMode(_ mode: Int, i: Int, r: Int) -> Int {
-        switch mode {
-        case 0:
-            return dict[i, default: 0]
-        case 1:
-            return i
-        case 2:
-            return r + dict[i, default: 0]
-        default:
-            fatalError()
-        }
+func calcORE(elements: [String: E], table: [String: [R]]) -> Int {
+    return elements.values.reduce(0) {
+        if $1.count < 0 { return $0 }
+        let r = table[$1.name]![0]
+        let a = $1.count / r.from.count
+        let b = ($1.count % r.from.count == 0) ? a : a + 1
+        return $0 + b * r.to.count
     }
 }
 
-struct Point: Hashable { let x, y: Int }
-func +(lhs: Point, rhs: Point) -> Point {
-    return Point(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
-}
+//    9 ORE => 2 A
+//    8 ORE => 3 B
+//    7 ORE => 5 C
+//    3 A, 4 B => 1 AB
+//    5 B, 7 C => 1 BC
+//    4 C, 1 A => 1 CA
+//    2 AB, 3 BC, 4 CA => 1 FUEL
+let table = readInput(from: "input.txt")
 
-func dijkstra(begin: Point,
-              droid: Program) -> (finish: Point?, map: [Point: Int], path: [Point: Int]) {
-    var map: [Point: Int] = [:]
-    var path = [begin: 0]
-    var queue: [(Point, Program)] = [(begin, droid)]
-    var finish: Point?
-    while !queue.isEmpty {
-        let (first, originDroid) = queue.removeFirst()
-        // north (1), south (2), west (3), and east (4)
-        let points = [first + Point(x: 0, y: 1),
-                      first + Point(x: 0, y: -1),
-                      first + Point(x: -1, y: 0),
-                      first + Point(x: 1, y: 0)]
-        for direction in [1, 2, 3, 4] {
-            let newPosition = points[direction - 1]
-            if map[newPosition, default: -1] == 0 { continue }
-
-            var droid = originDroid
-            droid.input(direction)
-            droid.run()
-            let output = droid.readOutput()
-            droid.run()
-            map[newPosition] = output
-
-            switch output {
-            case 0:
-                continue
-            case 1:
-                break
-            case 2:
-                finish = newPosition
-            default:
-                fatalError()
-            }
-
-            if path[first]! + 1 < path[newPosition, default: 999] {
-                path[newPosition] = path[first]! + 1
-                queue.append((newPosition, droid))
-            }
-        }
+func printElements(_ elements: [E]) {
+    var output: [String] = []
+    for element in elements.sorted(by: { $0.name < $1.name }) {
+        output.append(String("\(element.count) \(element.name)"))
     }
-
-    return (finish, map, path)
+    print(output.joined(separator: " + "))
 }
 
-//
-let input = readInput(from: "input.txt")
-let begin = Point(x: 0, y: 0)
-var droid = Program(nums: input)
-droid.run()
-let result = dijkstra(begin: begin, droid: droid)
-print(result.path[result.finish!]!)
+func calculateOREforFUEL(fuel: Int) -> Int {
+    var react = false
+    var elements: [String: E] = ["FUEL": E(name: "FUEL", count: fuel)]
+    repeat {
+        react = false
+        for (key, element) in elements {
+            let new = tryReact(element: element, table: table)
+            if new.isEmpty || new == [element] { continue }
 
-func dijkstraVanilla(begin: Point, map: [Point: Int]) -> [Point: Int] {
-    var queue = [begin]
-    var path: [Point: Int] = [begin: 0]
-    while !queue.isEmpty {
-        let first = queue.removeFirst()
-        let points = [first + Point(x: 0, y: 1),
-                      first + Point(x: 0, y: -1),
-                      first + Point(x: -1, y: 0),
-                      first + Point(x: 1, y: 0)]
-        for point in points {
-            if map[point] == 0 { continue }
-            if path[first]! + 1 < path[point, default: 999] {
-                path[point] = path[first]! + 1
-                queue.append(point)
+//            printElements(new)
+            elements.removeValue(forKey: key)
+            for newElement in new {
+                elements[newElement.name] = E(
+                    name: newElement.name,
+                    count: (elements[newElement.name]?.count ?? 0) + newElement.count
+                )
             }
+//            printElements(Array(elements.values))
+//            print("")
+            react = true
+            break
         }
-    }
-    return path
+    } while react
+
+    return calcORE(elements: elements, table: table)
 }
-let path = dijkstraVanilla(begin: result.finish!, map: result.map)
-print(path.values.max()!)
+
+print("*", calculateOREforFUEL(fuel: 1))
+
+let ore = 1_000_000_000_000
+var low = 1
+var up = 999_999_999_999
+while low < up {
+    let middle = low + (up - low) / 2
+    let result = calculateOREforFUEL(fuel: middle)
+    if result == ore {
+        low = middle
+        break
+    } else if result < ore {
+        low = middle + 1
+    } else {
+        up = middle - 1
+    }
+}
+
+let maxFuel = [low, low + 1, low - 1].filter {
+    calculateOREforFUEL(fuel: $0) < ore
+}.max()!
+print("**", maxFuel)
