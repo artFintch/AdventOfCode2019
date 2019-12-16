@@ -8,124 +8,115 @@
 
 import Frog
 
-struct E: Equatable {
-    let name: String
-    let count: Int
-}
-struct R {
-    let from: E
-    let to: E
+let input = Frog("input.txt").readLine()!
+    .map(String.init)
+    .compactMap(Int.init)
+
+//var cache: [String: [Int]] = [:]
+func getMult(row: Int, column: Int) -> Int {
+    let width = 4 * (row + 1)
+    let index = (column + 1) % width
+    let localIndex = index / (row + 1)
+    return [0, 1, 0, -1][localIndex]
+
+
+//    let k = "\(column),\(row)"
+//    let a = column/((row+1)*4)+2
+//    if cache[k] != nil {
+//        return cache[k]![column + 1]
+//    }
+//
+//    let base = [0, 1, 0, -1]
+//    var new: [Int] = []
+//    for index in base {
+//        for _ in 0..<(row+1) {
+//            new.append(index)
+//        }
+//    }
+
+//    [0, 0, 1, 1, 0, 0, -1, -1]
+//    return base[(((column + row) % base.count) + 1) % base.count]
+
+
+//    var new2: [Int] = []
+//    for _ in 0...a {
+//        new2.append(contentsOf: new)
+//    }
+//    cache[k] = new2
+//    return new2[column + 1]
 }
 
-func readInput(from path: String) -> [String: [R]] {
-    var table: [String: [R]] = [:]
-    Frog(path).readLines().forEach {
-        let sides: [String] = $0.components(separatedBy: " => ")
-        let leftSide: [E] = sides[0].components(separatedBy: ", ").map { (part: String) in
-            let parts = part.components(separatedBy: " ")
-            return E(name: parts[1], count: Int(parts[0])!)
+print(getMult(row: 0, column: 0) == 1)
+print(getMult(row: 0, column: 1) == 0)
+print(getMult(row: 0, column: 2) == -1)
+print(getMult(row: 0, column: 3) == 0)
+print(getMult(row: 0, column: 4) == 1)
+
+print(getMult(row: 1, column: 5) == -1)
+print(getMult(row: 1, column: 1) == 1)
+print(getMult(row: 6, column: 5) == 0)
+
+
+var ar: [[Int]] = Array(repeating: [], count: input.count)
+func runPhase(input: [Int]) -> [Int] {
+    var output: [Int] = []
+    for row in input.indices {
+//        var line = ""
+        var sum = 0
+        for column in input.indices {
+            sum += input[column] * getMult(row: row, column: column)
+//            print(column, a)
+//            line += String("\(input[column])*\(getMult(row: row, column: column)) ")
         }
-        let rightParts = sides[1].components(separatedBy: " ")
-        let rightSide = E(name: rightParts[1], count: Int(rightParts[0])!)
-        table[rightSide.name] = leftSide.map {
-            R(from: rightSide, to: $0)
-        }
+//        print(Double(row)/Double(input.count))
+        let a = abs(sum % 10)
+        output.append(a)
+        ar[row].append(sum)
     }
-    return table
+    return output
 }
 
-func tryReact(element: E, table: [String: [R]]) -> [E] {
-//    if element.name == "ORE" { return [] }
-    if element.count < 0 { return [element] }
-    let reactions = table[element.name, default: []]
-    let a = element.count / reactions[0].from.count
-    let b = (element.count % reactions[0].from.count == 0) ? a : a + 1
-    var newElements: [E] = reactions.compactMap {
-        if $0.to.name == "ORE" { return nil }
-//        print(element, $0.from, $0.to)
-//        print($0.from.name, "\(element.count) (\(b * $0.from.count))", " / ", $0.from.count, " * ", $0.to.count, " = ", b * $0.to.count, $0.to.name)
-//        print("")
-        return E(name: $0.to.name, count: b * $0.to.count)
-    }
-    if !newElements.isEmpty, element.count != b * reactions[0].from.count {
-        newElements.append(E(name: element.name, count: element.count - b * reactions[0].from.count))
-    }
-    return newElements
+func printNums(_ nums: [Int], _ nums2: [Int]) {
+    print(nums.map(String.init).joined(), nums2.map(String.init).joined())
 }
 
-func calcORE(elements: [String: E], table: [String: [R]]) -> Int {
-    return elements.values.reduce(0) {
-        if $1.count < 0 { return $0 }
-        let r = table[$1.name]![0]
-        let a = $1.count / r.from.count
-        let b = ($1.count % r.from.count == 0) ? a : a + 1
-        return $0 + b * r.to.count
-    }
+//print(5978017%650)
+//617
+var nums = input
+//let offset = Int(nums[0..<7].map(String.init).joined())
+
+//var nums2 = input + input
+//printNums(nums, nums2)
+var phase = 0
+while phase < 100 {
+    phase += 1
+    nums = runPhase(input: nums)
+//    nums2 = runPhase(input: nums2)
+//    printNums(nums, [])
+//    print("phase:", phase)
+}
+//print(nums[617..<625].map(String.init).joined())
+
+for (i, aa) in ar.enumerated() {
+    print(i, aa)
 }
 
-//    9 ORE => 2 A
-//    8 ORE => 3 B
-//    7 ORE => 5 C
-//    3 A, 4 B => 1 AB
-//    5 B, 7 C => 1 BC
-//    4 C, 1 A => 1 CA
-//    2 AB, 3 BC, 4 CA => 1 FUEL
-let table = readInput(from: "input.txt")
+//var nums: [Int] = []
+//for _ in 0..<1_000 {
+//    nums.append(contentsOf: input)
+//}
 
-func printElements(_ elements: [E]) {
-    var output: [String] = []
-    for element in elements.sorted(by: { $0.name < $1.name }) {
-        output.append(String("\(element.count) \(element.name)"))
-    }
-    print(output.joined(separator: " + "))
-}
+//var phase = 0
+//while phase < 100 {
+//    phase += 1
+//    nums = runPhase(input: nums)
+//    print("phase:", phase)
+//}
+//print(nums[0..<8].map(String.init).joined())
 
-func calculateOREforFUEL(fuel: Int) -> Int {
-    var react = false
-    var elements: [String: E] = ["FUEL": E(name: "FUEL", count: fuel)]
-    repeat {
-        react = false
-        for (key, element) in elements {
-            let new = tryReact(element: element, table: table)
-            if new.isEmpty || new == [element] { continue }
 
-//            printElements(new)
-            elements.removeValue(forKey: key)
-            for newElement in new {
-                elements[newElement.name] = E(
-                    name: newElement.name,
-                    count: (elements[newElement.name]?.count ?? 0) + newElement.count
-                )
-            }
-//            printElements(Array(elements.values))
-//            print("")
-            react = true
-            break
-        }
-    } while react
-
-    return calcORE(elements: elements, table: table)
-}
-
-print("*", calculateOREforFUEL(fuel: 1))
-
-let ore = 1_000_000_000_000
-var low = 1
-var up = 999_999_999_999
-while low < up {
-    let middle = low + (up - low) / 2
-    let result = calculateOREforFUEL(fuel: middle)
-    if result == ore {
-        low = middle
-        break
-    } else if result < ore {
-        low = middle + 1
-    } else {
-        up = middle - 1
-    }
-}
-
-let maxFuel = [low, low + 1, low - 1].filter {
-    calculateOREforFUEL(fuel: $0) < ore
-}.max()!
-print("**", maxFuel)
+// 27, 17, 15, 33, 17
+// 20, 10, 8, 28, 14
+// 16, 10, 8, 20, 6
+// 10, 4, 8, 12, 6
+// 4, 4, 4, 4, 4
