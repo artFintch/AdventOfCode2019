@@ -128,48 +128,89 @@ func runProgram(_ nums: [Int], input: () -> Int, output: (Int) -> Void) {
 }
 
 //
-var input = readInput(from: "input.txt")
+let input = readInput(from: "input.txt")
 
-var map: [[Int]] = []
-var row: [Int] = []
-runProgram(input, input: { () -> Int in
-    fatalError()
-}, output: {
-    switch $0 {
-    case 46:
-        row.append(0)
-    case 35:
-        row.append(1)
-    case 10:
-        if !row.isEmpty {
-            map.append(row)
-            row.removeAll()
-        }
-    default:
-//        fatalError()
-        print($0)
-        break
-    }
-})
-map.forEach {
-    print($0.map { $0 == 1 ? "#" : "." })
-}
-
-var count = 0
-var sum = 0
-for i in 1..<map.count-1 {
-    for j in 1..<map[i].count-1 {
-        if map[i][j] == 1 && map[i-1][j] == 1 && map[i+1][j] == 1 && map[i][j-1] == 1 && map[i][j+1] == 1 {
-            sum += i * j
-            count += 1
-            map[i][j] = 2
-        }
+var size = 50
+var totalInputCount = 0
+var map: [[Int]] = Array(repeating: Array(repeating: 0, count: size), count: size)
+for y in 0..<size {
+    for x in 0..<size {
+        var inputCount = 0
+        runProgram(input, input: { () -> Int in
+            let input: Int
+            if inputCount % 2 == 0 {
+                input = x
+            } else {
+                input = y
+            }
+            inputCount += 1
+            totalInputCount += 1
+            return input
+        }, output: {
+            map[y][x] = $0
+        })
     }
 }
-print(count, sum)
+print(map.flatMap { $0 }.reduce(0, +))
+//map.forEach {
+//    print($0.map { $0 == 0 ? "." : "#" })
+//}
 
-map.forEach {
-    print($0.map {
-        $0 == 1 ? "#" : $0 == 2 ? "O" : "."
+func test(input: [Int],
+          value: Int,
+          ordinate: Bool = false,
+          anotherValue: Int = 0,
+          count: Int = 100) -> Bool {
+    var isCorrect = false
+    var inputCount = 0
+    runProgram(input, input: { () -> Int in
+        let input: Int
+        if inputCount % 2 == 0 {
+            input = ordinate ? anotherValue : value
+        } else {
+            input = ordinate ? value : anotherValue
+        }
+        inputCount += 1
+        return input
+    }, output: {
+        isCorrect = ($0 == 1)
     })
+
+    if !isCorrect {
+        return false
+    }
+
+    inputCount = 0
+    runProgram(input, input: { () -> Int in
+        let input: Int
+        if inputCount % 2 == 0 {
+            input = ordinate ? anotherValue + count - 1 : value
+        } else {
+            input = ordinate ? value : anotherValue + count - 1
+        }
+        inputCount += 1
+        return input
+    }, output: {
+        isCorrect = ($0 == 1)
+    })
+
+    return isCorrect
 }
+
+func square(input: [Int],
+            value: Int,
+            anotherValue: Int = 0,
+            count: Int = 100) -> Bool {
+    return test(input: input, value: value, ordinate: true, anotherValue: anotherValue, count: count) &&
+        test(input: input, value: value + 99, ordinate: true, anotherValue: anotherValue, count: count)
+}
+
+for y in 1400..<1800 {
+    for x in 1200..<1500 {
+        if square(input: input, value: y, anotherValue: x, count: 100) {
+            print(x, y)
+            fatalError()
+        }
+    }
+}
+print(10_000 * 1220 + 1460)
