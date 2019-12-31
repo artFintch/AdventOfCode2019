@@ -8,209 +8,124 @@
 
 import Frog
 
-func readInput(from path: String) -> [Int] {
-    return Frog(path).readLine()!
-        .components(separatedBy: ",")
-        .compactMap(Int.init)
+func readInput(from path: String) -> [[String]] {
+    return Frog(path).readLines().map {
+        $0.map(String.init)
+    }
 }
 
-func getDigits(num: Int) -> [Int] {
-    var digits: [Int] = []
-    var num = num
-    while num > 0 {
-        let lastDigit = num % 10
-        num /= 10
-        digits.append(lastDigit)
-    }
-    return digits
+struct Point: Hashable { let x, y: Int }
+func +(lhs: Point, rhs: Point) -> Point {
+    return Point(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
 }
 
-func runProgram(_ nums: [Int], input: () -> Int, output: (Int) -> Void) {
-    var dict: [Int: Int] = [:]
-    for pair in nums.enumerated() {
-        dict[pair.offset] = pair.element
-    }
+struct End: Hashable {
+    let point: Point
+    let isKey: Bool
+    let keys: Set<String>
+    let dist: Int
+}
 
-    var index = 0
-    var rel = 0
+func dfs(begin: Point,
+         map: [[String]],
+         visited: Set<Point>,
+         keys: Set<String>,
+         path: inout [Point: Int],
+         ends: inout [End]) {
+    var visited = visited
+    var keys = keys
+    let traverse = [begin + Point(x: -1, y: 0),
+                    begin + Point(x: 0, y: -1),
+                    begin + Point(x: 1, y: 0),
+                    begin + Point(x: 0, y: 1)]
+    for next in traverse where !visited.contains(next) {
+        visited.insert(next)
+        let label = map[next.y][next.x]
+        switch label {
+        case "#":
+            continue
 
-    func indexForMode(_ mode: Int, i: Int, r: Int) -> Int {
-        switch mode {
-        case 0:
-            return dict[i, default: 0]
-        case 1:
-            return i
-        case 2:
-            return r + dict[i, default: 0]
-        default:
-            fatalError()
-        }
-    }
-
-    while true {
-        var digits = getDigits(num: dict[index]!)
-
-        let op: Int
-        if digits.count == 1 {
-            op = digits.removeFirst()
-        } else {
-            op = digits[1] * 10 + digits.removeFirst()
-            digits.removeFirst()
-        }
-
-        let mode0 = digits.isEmpty ? 0 : digits.removeFirst()
-        let mode1 = digits.isEmpty ? 0 : digits.removeFirst()
-        let mode2 = digits.isEmpty ? 0 : digits.removeFirst()
-
-        switch op {
-        case 1:
-            // +
-            let arg1 = dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
-            let arg2 = dict[indexForMode(mode1, i: index + 2, r: rel), default: 0]
-            dict[indexForMode(mode2, i: index + 3, r: rel)] = arg1 + arg2
-            index += 4
-
-        case 2:
-            // *
-            let arg1 = dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
-            let arg2 = dict[indexForMode(mode1, i: index + 2, r: rel), default: 0]
-            dict[indexForMode(mode2, i: index + 3, r: rel)] = arg1 * arg2
-            index += 4
-
-        case 3:
-            // in
-            dict[indexForMode(mode0, i: index + 1, r: rel)] = input()
-            index += 2
-
-        case 4:
-            // out
-            output(dict[indexForMode(mode0, i: index + 1, r: rel), default: 0])
-            index += 2
-
-        case 5:
-            // jump-if-true
-            let arg1 = dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
-            let arg2 = dict[indexForMode(mode1, i: index + 2, r: rel), default: 0]
-            index = (arg1 != 0) ? arg2 : index + 3
-
-        case 6:
-            // jump-if-false
-            let arg1 = dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
-            let arg2 = dict[indexForMode(mode1, i: index + 2, r: rel), default: 0]
-            index = (arg1 == 0) ? arg2 : index + 3
-
-        case 7:
-            // less
-            let arg1 = dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
-            let arg2 = dict[indexForMode(mode1, i: index + 2, r: rel), default: 0]
-            dict[indexForMode(mode2, i: index + 3, r: rel)] = (arg1 < arg2 ? 1 : 0)
-            index += 4
-
-        case 8:
-            // equals
-            let arg1 = dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
-            let arg2 = dict[indexForMode(mode1, i: index + 2, r: rel), default: 0]
-            dict[indexForMode(mode2, i: index + 3, r: rel)] = (arg1 == arg2 ? 1 : 0)
-            index += 4
-
-        case 9:
-            // relative
-            rel += dict[indexForMode(mode0, i: index + 1, r: rel), default: 0]
-            index += 2
-
-        case 99:
-            return
+        case ".":
+            path[next] = path[begin]! + 1
+            dfs(begin: next, map: map, visited: visited, keys: keys, path: &path, ends: &ends)
 
         default:
-            fatalError()
-        }
-    }
-}
-
-//
-let input = readInput(from: "input.txt")
-
-var size = 50
-var totalInputCount = 0
-var map: [[Int]] = Array(repeating: Array(repeating: 0, count: size), count: size)
-for y in 0..<size {
-    for x in 0..<size {
-        var inputCount = 0
-        runProgram(input, input: { () -> Int in
-            let input: Int
-            if inputCount % 2 == 0 {
-                input = x
+            path[next] = path[begin]! + 1
+            if label == label.uppercased() {
+                if !keys.contains(label.lowercased()) {
+                    continue
+                }
+                ends.append(End(point: next, isKey: false, keys: keys, dist: path[next]!))
             } else {
-                input = y
+                keys.insert(label)
+                ends.append(End(point: next, isKey: true, keys: keys, dist: path[next]!))
             }
-            inputCount += 1
-            totalInputCount += 1
-            return input
-        }, output: {
-            map[y][x] = $0
-        })
-    }
-}
-print(map.flatMap { $0 }.reduce(0, +))
-//map.forEach {
-//    print($0.map { $0 == 0 ? "." : "#" })
-//}
-
-func test(input: [Int],
-          value: Int,
-          ordinate: Bool = false,
-          anotherValue: Int = 0,
-          count: Int = 100) -> Bool {
-    var isCorrect = false
-    var inputCount = 0
-    runProgram(input, input: { () -> Int in
-        let input: Int
-        if inputCount % 2 == 0 {
-            input = ordinate ? anotherValue : value
-        } else {
-            input = ordinate ? value : anotherValue
-        }
-        inputCount += 1
-        return input
-    }, output: {
-        isCorrect = ($0 == 1)
-    })
-
-    if !isCorrect {
-        return false
-    }
-
-    inputCount = 0
-    runProgram(input, input: { () -> Int in
-        let input: Int
-        if inputCount % 2 == 0 {
-            input = ordinate ? anotherValue + count - 1 : value
-        } else {
-            input = ordinate ? value : anotherValue + count - 1
-        }
-        inputCount += 1
-        return input
-    }, output: {
-        isCorrect = ($0 == 1)
-    })
-
-    return isCorrect
-}
-
-func square(input: [Int],
-            value: Int,
-            anotherValue: Int = 0,
-            count: Int = 100) -> Bool {
-    return test(input: input, value: value, ordinate: true, anotherValue: anotherValue, count: count) &&
-        test(input: input, value: value + 99, ordinate: true, anotherValue: anotherValue, count: count)
-}
-
-for y in 1400..<1800 {
-    for x in 1200..<1500 {
-        if square(input: input, value: y, anotherValue: x, count: 100) {
-            print(x, y)
-            fatalError()
+            dfs(begin: next, map: map, visited: visited, keys: keys, path: &path, ends: &ends)
         }
     }
 }
-print(10_000 * 1220 + 1460)
+
+var map = readInput(from: "input.txt")
+let y = map.firstIndex(where: { $0.contains("@") })!
+let x = map[y].firstIndex(where: { $0 == "@" })!
+map[y][x] = "."
+var begin = Point(x: x, y: y)
+
+//var path: [Point: Int] = [begin: 0]
+//var ends: [End] = []
+//dfs(begin: begin, map: map, visited: [begin], keys: [], path: &path, ends: &ends)
+//print(ends)
+//
+//var keys = ends[0].keys
+//begin = ends[0].point
+//ends.removeAll()
+//map[begin.y][begin.x] = "."
+//dfs(begin: begin, map: map, visited: [begin], keys: keys, path: &path, ends: &ends)
+//print(ends)
+//
+//keys = ends[1].keys
+//begin = ends[1].point
+//ends.removeAll()
+//map[begin.y][begin.x] = "."
+//dfs(begin: begin, map: map, visited: [begin], keys: keys, path: &path, ends: &ends)
+//map.forEach { print($0) }
+//print(ends)
+
+var count = 0
+var hashed = 0
+var hash: [Set<End>: Int] = [:]
+func searchPaths(ends: [End], map: [[String]], min: Int) -> Int {
+    count += 1
+    let hashKey = Set(ends.filter({ $0.isKey }))
+    if hash[hashKey] != nil {
+        return hash[hashKey]!
+    }
+    hashed += 1
+    var min = min
+    for end in ends where end.isKey {
+        if min <= end.dist {
+            continue
+        }
+        var _ends: [End] = []
+        var path: [Point: Int] = [end.point: 0]
+        var map = map
+        map[end.point.y][end.point.x] = "."
+//        print(end.dist)
+//        map.forEach { print($0.joined()) }
+        dfs(begin: end.point, map: map, visited: [end.point], keys: end.keys, path: &path, ends: &_ends)
+        if !_ends.contains(where: { $0.isKey }) {
+            min = Swift.min(min, end.dist)
+//            print("finish")
+            continue
+        }
+        _ends = _ends.map {
+            End(point: $0.point, isKey: $0.isKey, keys: $0.keys, dist: end.dist + $0.dist)
+        }
+        min = Swift.min(searchPaths(ends: _ends, map: map, min: min), min)
+    }
+    hash[hashKey] = min
+    return min
+}
+
+print(searchPaths(ends: [End(point: begin, isKey: true, keys: [], dist: 0)], map: map, min: 99999))
+print(hashed, count)
